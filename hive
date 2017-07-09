@@ -1,0 +1,83 @@
+HIVE
+-------------
+5) Find the most popular top 10 job positions for H1B visa applications for each year?
+a) for all the applications
+b) for only certified applications.
+
+create table 5year11(year int,job_title string)row format delimited fields terminated by '\t' stored as textfile;
+insert overwrite table y21 select year,job_title from h1b_final;
+
+5 a)select job_title,year,count(job_title) as count from h1bapplication.5year11 where year=2011 group by job_title,year order by count desc limit 10;
+select job_title,year,count(job_title) as count from h1bapplication.5year11 where year=2012 group by job_title,year order by count desc limit 10;
+ select job_title,year,count(job_title) as count from h1bapplication.5year11 where year=2013 group by job_title,year order by count desc limit 10;
+ select job_title,year,count(job_title) as count from h1bapplication.5year11 where year=2014 group by job_title,year order by count desc limit 10;
+ select job_title,year,count(job_title) as count from h1bapplication.5year11 where year=2015 group by job_title,year order by count desc limit 10;
+ select job_title,year,count(job_title) as count from h1bapplication.5year11 where year=2016 group by job_title,year order by count desc limit 10;
+
+create table 5byear11(year int,jobtile string,case_status string) row format delimited fields terminated by '\t' stored as textfile;
+insert overwrite table 5byear11 select year,job_title,case_status from h1b_final;
+
+
+ 5 b)select jobtile,year,count(jobtile),case_status as count from h1bapplication.5byear11 where year=2011 and case_status =='CERTIFIED' group by jobtile,year,case_status order by count desc limit 10;
+select jobtile,year,count(jobtile),case_status as count from h1bapplication.5byear11 where year=2012 and case_status =='CERTIFIED' group by jobtile,year,case_status order by count desc limit 10;
+select jobtile,year,count(jobtile),case_status as count from h1bapplication.5byear11 where year=2013 and case_status =='CERTIFIED' group by jobtile,year,case_status order by count desc limit 10;
+select jobtile,year,count(jobtile),case_status as count from h1bapplication.5byear11 where year=2014 and case_status =='CERTIFIED' group by jobtile,year,case_status order by count desc limit 10;
+select jobtile,year,count(jobtile),case_status as count from h1bapplication.5byear11 where year=2015 and case_status =='CERTIFIED' group by jobtile,year,case_status order by count desc limit 10;
+select jobtile,year,count(jobtile),case_status as count from h1bapplication.5byear11 where year=2016 and case_status =='CERTIFIED' group by jobtile,year,case_status order by count desc limit 10;
+
+
+4))Which top 5 employers file the most petitions each year? - Case Status - ALL
+
+create table y11(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y11 select employer_name,year,count(*) as top5 from h1b_final  where year=2011 group by employer_name,year order by top5 desc limit 5;
+
+create table y12(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y12 select employer_name,year,count(*) as top5 from h1b_final where year=2012 group by employer_name,year order by top5 desc limit 5;
+
+create table y13(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y13 select employer_name,year,count(*) as top5 from h1b_final where year=2013 group by employer_name,year order by top5 desc limit 5;
+
+create table y14(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y14 select employer_name,year,count(*) as top5 from h1b_final  where year=2014 group by employer_name,year order by top5 desc limit 5;
+
+create table y15(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y15 select employer_name,year,count(*) as top5 from h1b_final  where year=2015 group by employer_name,year order by top5 desc limit 5;
+
+create table y16(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y16 select employer_name,year,count(*) as top5 from h1b_final where year=2016 group by employer_name,year order by top5 desc limit 5;
+
+select * from y11 union all select * from y12 union all select * from y13 union all select * from y14 union all select * from y15 union all select * from y16;
+
+8)Find the average Prevailing Wage for each Job for each Year (take part time and full time separate). Arrange the output in descending order.
+
+create table h1b_finalByCat(s_no int,case_status string,employer_name string,soc_name string,job_title string,prevailing_wage int,year string,worksite string,longitute double,latitute double)
+                     > partitioned by(full_time_position string)
+                     > row format delimited fields 
+                     > terminated by'\t'
+                     > stored as textfile;
+
+hive (h1bapplication)> SET hive.exec.dynamic.partition = true;
+hive (h1bapplication)> SET hive.exec.dynamic.partition.mode = nonstrict;
+
+INSERT OVERWRITE TABLE h1b_finalByCat PARTITION(full_time_position)select s_no,case_status,employer_name,soc_name,job_title,prevailing_wage,year,worksite,longitute,latitute,full_time_position from h1b_final;
+8)a)INSERT OVERWRITE DIRECTORY '/h1b/ques8firstpart' row format delimited fields terminated by ','select year,job_title,AVG(prevailing_wage) as average from h1b_finalByCat where full_time_position ='Y'and prevailing_wage >0 group by job_title,year order by average desc;
+                                                                                                
+
+IN FULL_TIME_POSITION ='Y' --------------------->HIGHEST AVG(PREVAILING_WAGE)------------------->2016,DIRECTOR, SOCIAL AND DIGITAL MEDIA,3.291392E8
+                                                 LOWEST AVG(PREVAILING_WAGE)-------------------->2015	ADSF	52.0
+
+                                                   
+
+
+
+b)INSERT OVERWRITE LOCAL DIRECTORY '/home/hduser/ques8secondpart.sql' row format delimited fields terminated by ',' select year,job_title,AVG(prevailing_wage) as average from h1b_finalByCat where full_time_position ='N' and prevailing_wage >0 group by job_title,year order by average desc;
+
+IN FUL_TIME_POSITION ='N' -------------------->HIGHEST AVG(PREVAILING_WAGE) IS 2013,MANAGEMENT ANALYST, OPERATIONS,1.2351872E8
+                                               LOWEST AVG(PREVAILING_WAGE) IS 2016	IOS AND ANDROID DEVELOPER	1278.0
+
+3)Which industry(SOC_NAME) has the most number of Data Scientist positions?
+
+3)select soc_name ,count(soc_name) as soc_count from h1b_final where job_title like'%DATA SCIENTIST%' group by soc_name order by soc_count desc limit 1;(PREVAILING_WAGE) IS 2016	IOS AND ANDROID DEVELOPER	1278.0
+
+
+
