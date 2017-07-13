@@ -1,0 +1,18 @@
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+   b) find top 5 locations in the US who have got certified visa for each year.
+
+2 a) Which part of the US has the most Data Engineer jobs for each year?
+  
+select worksite,count(*) as hi from h1b_final where job_title like'%DATA ENGINEER%' and year =2011 group by year,worksite order by hi desc limit 1;
+select worksite,count(*) as hi from h1b_final where job_title like'%DATA ENGINEER%' and year =2012 group by year,worksite order by hi desc limit 1;
+select worksite,count(*) as hi from h1b_final where job_title like'%DATA ENGINEER%' and year =2013 group by year,worksite order by hi desc limit 1;
+select worksite,count(*) as hi from h1b_final where job_title like'%DATA ENGINEER%' and year =2014 group by year,worksite order by hi desc limit 1;
+select worksite,count(*) as hi from h1b_final where job_title like'%DATA ENGINEER%' and year =2015 group by year,worksite order by hi desc limit 1;
+select worksite,count(*) as hi from h1b_final where job_title like'%DATA ENGINEER%' and year =2016 group by year,worksite order by hi desc limit 1;
+
+2 b)select worksite,count(*) as hi from h1b_final where case_status like'CERTIFIED' and year =2011 group by year,worksite order by hi desc limit 5;
+select worksite,count(*) as hi from h1b_final where case_status like'CERTIFIED' and year =2012 group by year,worksite order by hi desc limit 5;
+select worksite,count(*) as hi from h1b_final where case_status like'CERTIFIED' and year =2013 group by year,worksite order by hi desc limit 5;
+select worksite,count(*) as hi from h1b_final where case_status like'CERTIFIED' and year =2014 group by year,worksite order by hi desc limit 5;
+select worksite,count(*) as hi from h1b_final where case_status like'CERTIFIED' and year =2015 group by year,worksite order by hi desc limit 5;
