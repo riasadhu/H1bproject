@@ -1,0 +1,22 @@
+
+create table y11(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y11 select employer_name,year,count(*) as top5 from h1b_final  where year=2011 group by employer_name,year order by top5 desc limit 5;
+
+create table y12(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y12 select employer_name,year,count(*) as top5 from h1b_final where year=2012 group by employer_name,year order by top5 desc limit 5;
+
+create table y13(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y13 select employer_name,year,count(*) as top5 from h1b_final where year=2013 group by employer_name,year order by top5 desc limit 5;
+
+create table y14(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y14 select employer_name,year,count(*) as top5 from h1b_final  where year=2014 group by employer_name,year order by top5 desc limit 5;
+
+create table y15(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y15 select employer_name,year,count(*) as top5 from h1b_final  where year=2015 group by employer_name,year order by top5 desc limit 5;
+
+create table y16(employer_name string,year string,count int) row format delimited fields terminated by '\t' stored as textfile;
+INSERT OVERWRITE TABLE y16 select employer_name,year,count(*) as top5 from h1b_final where year=2016 group by employer_name,year order by top5 desc limit 5;
+
+select * from y11 union all select * from y12 union all select * from y13 union all select * from y14 union all select * from y15 union all select * from y16;
+
+
