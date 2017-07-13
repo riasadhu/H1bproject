@@ -1,0 +1,27 @@
+create table h1b_finalByCat(s_no int,case_status string,employer_name string,soc_name string,job_title string,prevailing_wage int,year string,worksite string,longitute double,latitute double)
+                     > partitioned by(full_time_position string)
+                     > row format delimited fields 
+                     > terminated by'\t'
+                     > stored as textfile;
+OK
+Time taken: 1.644 seconds
+hive (h1bapplication)> SET hive.exec.dynamic.partition = true;
+hive (h1bapplication)> SET hive.exec.dynamic.partition.mode = nonstrict;
+
+INSERT OVERWRITE TABLE h1b_finalByCat PARTITION(full_time_position)select s_no,case_status,employer_name,soc_name,job_title,prevailing_wage,year,worksite,longitute,latitute,full_time_position from h1b_final;
+8)INSERT OVERWRITE DIRECTORY '/h1b/ques8firstpart' row format delimited fields terminated by ','select year,job_title,AVG(prevailing_wage) as average from h1b_finalByCat where full_time_position ='Y'and prevailing_wage >0 group by job_title,year order by average desc;
+                                                                                                
+
+IN FULL_TIME_POSITION ='Y' --------------------->HIGHEST AVG(PREVAILING_WAGE)------------------->2016,DIRECTOR, SOCIAL AND DIGITAL MEDIA,3.291392E8
+                                                 LOWEST AVG(PREVAILING_WAGE)-------------------->2015	ADSF	52.0
+
+                                                   
+
+
+
+8)bINSERT OVERWRITE LOCAL DIRECTORY '/home/hduser/ques8secondpart.sql' row format delimited fields terminated by ',' select year,job_title,AVG(prevailing_wage) as average from h1b_finalByCat where full_time_position ='N' and prevailing_wage >0 group by job_title,year order by average desc;
+
+IN FULL_TIME_POSITION ='N' -------------------->HIGHEST AVG(PREVAILING_WAGE) IS 2013,MANAGEMENT ANALYST, OPERATIONS,1.2351872E8
+                                               LOWEST AVG(PREVAILING_WAGE) IS 2016	IOS AND ANDROID DEVELOPER	1278.0
+
+
